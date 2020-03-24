@@ -123,24 +123,94 @@ bool diagonalCrossed(char board[][SIDE])
 bool gameOver(char board[][SIDE]) 
 { 
 	return(rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board) ); 
-} 
+}
 
-int bestMove(char board[][SIDE])
+int minimax(char board[][SIDE], int depth, bool isAI)
+{
+	int score = 0;
+	int bestScore = 0;
+	if (gameOver(board) == true)
+	{
+		if (isAI == true)
+			return -1;
+		if (isAI == false)
+			return +1;
+	}
+	else
+	{
+		if(depth < 9)
+		{
+			if(isAI == true)
+			{
+				bestScore = -999;
+				for(int i=0; i<SIDE; i++)
+				{
+					for(int j=0; j<SIDE; j++)
+					{
+						if (board[i][j] == ' ')
+						{
+							board[i][j] = COMPUTERMOVE;
+							score = minimax(board, depth + 1, false);
+							board[i][j] = ' ';
+							if(score > bestScore)
+							{
+								bestScore = score;
+							}
+						}
+					}
+				}
+				return bestScore;
+			}
+			else
+			{
+				bestScore = 999;
+				for (int i = 0; i < SIDE; i++)
+				{
+					for (int j = 0; j < SIDE; j++)
+					{
+						if (board[i][j] == ' ')
+						{
+							board[i][j] = HUMANMOVE;
+							score = minimax(board, depth + 1, true);
+							board[i][j] = ' ';
+							if (score < bestScore)
+							{
+								bestScore = score;
+							}
+						}
+					}
+				}
+				return bestScore;
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+
+int bestMove(char board[][SIDE], int moveIndex)
 {
 	int x = -1, y = -1;
+	int score = 0, bestScore = -999;
 	for (int i = 0; i < SIDE; i++)
 	{
 		for (int j = 0; j < SIDE; j++)
 		{
 			if (board[i][j] == ' ')
 			{
-				x = i;
-				y = j;
-				break;
+				board[i][j] = COMPUTERMOVE;
+				score = minimax(board, moveIndex+1, false);
+				board[i][j] = ' ';
+				if(score > bestScore)
+				{
+					bestScore = score;
+					x = i;
+					y = j;
+				}
 			}
 		}
-		if (x != -1 && y != -1)
-			break;
 	}
 	return x*3+y;
 }
@@ -192,7 +262,7 @@ void playTicTacToe(int whoseTurn)
 			// 	whoseTurn = HUMAN;
 			// }
 			// else if(keep[moves[moveIndex]]==1)
-			n = bestMove(board);
+			n = bestMove(board, moveIndex);
 			x = n / SIDE;
 			y = n % SIDE;
 			board[x][y] = COMPUTERMOVE; 
