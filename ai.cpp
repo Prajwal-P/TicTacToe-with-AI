@@ -39,28 +39,13 @@ void showInstructions()
 
 // A function to initialise the game 
 void initialise(char board[][SIDE]) 
-{ 
-	// Initiate the random number generator so that 
-	// the same configuration doesn't arises 
-	// srand(time(NULL)); 
-	
+{	
 	// Initially the board is empty 
 	for (int i=0; i<SIDE; i++) 
 	{ 
 		for (int j=0; j<SIDE; j++) 
 			board[i][j] = ' '; 
 	} 
-	
-	// Fill the moves with numbers 
-	// for (int i=0; i<SIDE*SIDE; i++) 
-	// {
-	// 	// moves[i] = i;
-	// 	keep[i] = 0;
-	// }
-
-	// randomise the moves 
-	// random_shuffle(moves, moves + SIDE*SIDE); 
-
 } 
 
 // A function to declare the winner of the game 
@@ -70,7 +55,6 @@ void declareWinner(int whoseTurn)
 		printf("COMPUTER has won\n"); 
 	else
 		printf("HUMAN has won\n"); 
-	return; 
 } 
 
 // A function that returns true if any of the row 
@@ -125,6 +109,7 @@ bool gameOver(char board[][SIDE])
 	return(rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board) ); 
 }
 
+// Function to calculate best score
 int minimax(char board[][SIDE], int depth, bool isAI)
 {
 	int score = 0;
@@ -190,6 +175,7 @@ int minimax(char board[][SIDE], int depth, bool isAI)
 	}
 }
 
+// Function to calculate best move
 int bestMove(char board[][SIDE], int moveIndex)
 {
 	int x = -1, y = -1;
@@ -218,56 +204,23 @@ int bestMove(char board[][SIDE], int moveIndex)
 // A function to play Tic-Tac-Toe 
 void playTicTacToe(int whoseTurn) 
 { 
-	// A 3*3 Tic-Tac-Toe board for playing 
 	char board[SIDE][SIDE]; 
-	
-	// int moves[SIDE*SIDE];
-	// int keep[SIDE*SIDE];
-	
-	// Initialise the game 
-	initialise(board); 
-	
-	// Show the instructions before playing 
-	showInstructions(); 
-	
 	int moveIndex = 0, x = 0, y = 0;
-	
-	// printf("\nmoves=[");
-	// for(int i = 0; i < SIDE*SIDE; i++)
-	// 	printf("%d ",moves[i]+1);
-	// printf("]\n\n");
+
+	initialise(board);
+	showInstructions(); 
 	
 	// Keep playing till the game is over or it is a draw 
 	while (gameOver(board) == false && moveIndex != SIDE*SIDE) 
 	{ 
-		// printf("moveIndex=%d\n",moveIndex);
-		
-		// printf("keep=[");		
-		// for(int i=0; i < SIDE*SIDE; i++)
-		// 	printf("%d ",keep[i]);
-		// printf("]\n");
-		
 		int n;
 		if (whoseTurn == COMPUTER) 
-		{ 
-			// if(keep[moves[moveIndex]]==0)
-			// {
-			// 	x = moves[moveIndex] / SIDE; 
-			// 	y = moves[moveIndex] % SIDE; 
-			// 	board[x][y] = COMPUTERMOVE; 
-			// 	printf("COMPUTER has put a %c in cell %d\n\n", COMPUTERMOVE, moves[moveIndex]+1);
-			// 	keep[moves[moveIndex]]=1;					
-			// 	showBoard(board); 
-			// 	moveIndex ++; 
-			// 	whoseTurn = HUMAN;
-			// }
-			// else if(keep[moves[moveIndex]]==1)
+		{
 			n = bestMove(board, moveIndex);
 			x = n / SIDE;
 			y = n % SIDE;
 			board[x][y] = COMPUTERMOVE; 
-			printf("COMPUTER has put a %c in cell %d\n\n", COMPUTERMOVE, (x*3+y)+1);
-			// keep[i]=1;
+			printf("COMPUTER has put a %c in cell %d\n\n", COMPUTERMOVE, n+1);
 			showBoard(board);
 			moveIndex ++; 
 			whoseTurn = HUMAN;
@@ -277,14 +230,10 @@ void playTicTacToe(int whoseTurn)
 		{
 			printf("You can insert in the following positions : ");
 			for(int i=0; i<SIDE; i++)
-			{
-				for(int j=0; j<SIDE; j++)
-				{
-					if(board[i][j] == ' ')
-						printf("%d ", (i*3+j)+1);
-				}
-			}
-            printf("\n\nEnter the position = ");
+				for (int j = 0; j < SIDE; j++)
+					if (board[i][j] == ' ')
+						printf("%d ", (i * 3 + j) + 1);
+			printf("\n\nEnter the position = ");
 			scanf("%d",&n);
 			n--;
 			x = n / SIDE;
@@ -293,12 +242,11 @@ void playTicTacToe(int whoseTurn)
 			{
 				board[x][y] = HUMANMOVE; 
 				printf ("\nHUMAN has put a %c in cell %d\n\n", HUMANMOVE, n+1); 
-				// keep[n]=1;
 				showBoard(board); 
 				moveIndex ++; 
 				whoseTurn = COMPUTER;
 			}
-			else if((board[x][y] == 'O' || board[x][y] == 'X') && n<9 && n>=0)
+			else if(board[x][y] != ' ' && n<9 && n>=0)
 			{
 				printf("\nPosition is occupied, select any one place from the available places\n\n");
 			}
@@ -310,27 +258,22 @@ void playTicTacToe(int whoseTurn)
 	} 
 
 	// If the game has drawn 
-	if (gameOver(board) == false && 
-			moveIndex == SIDE * SIDE) 
+	if (gameOver(board) == false && moveIndex == SIDE * SIDE) 
 		printf("It's a draw\n"); 
 	else
 	{ 
-		// Toggling the user to declare the actual 
-		// winner 
+		// Toggling the user to declare the actual winner 
 		if (whoseTurn == COMPUTER) 
 			whoseTurn = HUMAN; 
 		else if (whoseTurn == HUMAN) 
 			whoseTurn = COMPUTER; 
 		
-		// Declare the winner 
 		declareWinner(whoseTurn); 
 	} 
 } 
 
-// Driver program 
 int main() 
 { 
-	// Let us play the game with COMPUTER starting first
 	printf("\n-------------------------------------------------------------------\n\n");
 	printf("\t\t\t Tic-Tac-Toe\n"); 
 	printf("\n-------------------------------------------------------------------\n\n");
