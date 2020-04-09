@@ -45,7 +45,7 @@ function minimax(node, depth, isMaximizingPlayer, alpha, beta):
 minimax(0, 0, true, -INFINITY, +INFINITY)
 ~~~~
 
-## Minimax Algorithm Visualisation
+### Minimax Algorithm Visualisation
 ![alt text](https://github.com/Prajwal-P/TicTacToe-with-AI/blob/master/MiniMax-algorithm.png)
 
 ### Instructions to run:
