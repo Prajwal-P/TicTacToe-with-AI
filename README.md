@@ -54,7 +54,7 @@ minimax(0, 0, true, -INFINITY, +INFINITY)
 2. Open commmand prompt in the folder where program is saved
 3. `g++ ai.cpp` then `./a`
 
-#### Ubuntu
+#### Linux
 1. Install a cpp compiler
 2. Open terminal in the folder where program is saved
 3. `g++ ai.cpp` then `./a.out`
